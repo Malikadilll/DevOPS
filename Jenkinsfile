@@ -55,5 +55,16 @@ pipeline {
                 }
             }
         }
+        stage('Deploy Monitoring') {
+            steps {
+                // 1. Cleanup old Prometheus (if exists)
+                bat 'docker stop ar-prometheus || exit 0'
+                bat 'docker rm ar-prometheus || exit 0'
+
+                // 2. Run Prometheus
+                // We mount the config file we just created
+                bat 'docker run -d -p 9090:9090 --name ar-prometheus -v %WORKSPACE%/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus'
+            }
+        }
     }
 }
