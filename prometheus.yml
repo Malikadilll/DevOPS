@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'ar-furniture-backend'
+    static_configs:
+      # On Docker Desktop for Windows, 'host.docker.internal' lets 
+      # one container talk to localhost ports of the computer.
+      - targets: ['host.docker.internal:5000']
