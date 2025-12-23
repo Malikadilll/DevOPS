@@ -1,3 +1,7 @@
+// MONITORING SETUP
+const client = require('prom-client');
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics(); // Start collecting CPU, Memory, etc.
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
