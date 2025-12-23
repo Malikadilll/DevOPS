@@ -124,10 +124,28 @@ app.get('/api/products', async (req, res) => {
 });
 
 // Multer Config
+// Multer Config
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: { folder: 'ar-furniture', resource_type: 'auto', allowed_formats: ['jpg', 'png', 'glb'] },
+  params: async (req, file) => {
+    // 1. If the file field is 'model', upload as RAW (for .glb files)
+    if (file.fieldname === 'model') {
+      return {
+        folder: 'ar-furniture',
+        resource_type: 'raw', // <--- This fixes the 3D model corruption
+        format: 'glb'         // Force the correct extension
+      };
+    }
+    
+    // 2. Otherwise, upload as IMAGE (for .jpg/.png)
+    return {
+      folder: 'ar-furniture',
+      resource_type: 'image',
+      allowed_formats: ['jpg', 'png']
+    };
+  },
 });
+
 const upload = multer({ storage: storage });
 
 // 4. PROTECTED UPLOAD ROUTE (Added 'verifyToken')
