@@ -222,4 +222,10 @@ app.put('/api/products/:id', verifyToken, upload.fields([{ name: 'image' }, { na
   }
 });
 
+// METRICS ROUTE
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', client.register.contentType);
+  res.end(await client.register.metrics());
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
