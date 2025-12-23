@@ -63,7 +63,7 @@ pipeline {
 
                 // 2. Run Prometheus
                 // We mount the config file we just created
-                bat 'docker run -d -p 9090:9090 --name ar-prometheus -v %WORKSPACE%/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus'
+                bat 'docker run -d -p 9091:9090 --name ar-prometheus -v %WORKSPACE%/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus'
             }
         }
     }
