@@ -15,11 +15,11 @@ pipeline {
                 bat 'docker rm ar-furniture-frontend ar-furniture-backend || exit 0'
             }
         }
-stage('Create Config') {
+        
+        stage('Create Config') {
             steps {
                 dir('server') {
                     // Create the .env file on the fly
-                    // Replace the values with your actual secrets
                     bat 'echo PORT=5000 > .env'
                     bat 'echo MONGO_URI=mongodb+srv://admin:admin123@cluster0.k4rkrpb.mongodb.net/furnitureDB?appName=Cluster0 >> .env'
                     bat 'echo JWT_SECRET=super_secret_fyp_key_123 >> .env'
@@ -29,14 +29,15 @@ stage('Create Config') {
                 }
             }
         }
+
         stage('Deploy Backend') {
             steps {
                 dir('server') {
                     echo 'Building Backend...'
-                    bat 'docker build -t ar-furniture-backend .'
+                    // ADDED --no-cache TO FIX CACHE CORRUPTION
+                    bat 'docker build --no-cache -t ar-furniture-backend .'
                     
                     echo 'Running Backend...'
-                    // Windows requires the .env file to be in the same folder
                     bat 'docker run -d -p 5000:5000 --env-file .env --name ar-furniture-backend ar-furniture-backend'
                 }
             }
@@ -46,8 +47,8 @@ stage('Create Config') {
             steps {
                 dir('client') {
                     echo 'Building Frontend...'
-                    // We use Groovy string interpolation ${...} to pass the variable
-                    bat "docker build --build-arg REACT_APP_API_URL=${REACT_APP_API_URL} -t ar-furniture-frontend ."
+                    // ADDED --no-cache TO FIX CACHE CORRUPTION
+                    bat "docker build --no-cache --build-arg REACT_APP_API_URL=${REACT_APP_API_URL} -t ar-furniture-frontend ."
                     
                     echo 'Running Frontend...'
                     bat 'docker run -d -p 3000:80 --name ar-furniture-frontend ar-furniture-frontend'
